@@ -1,0 +1,6 @@
+{
+  "summary":  "Plano de implementação detalhado para criação do script de instalação automatizada em servidor local Ubuntu/Debian com PostgreSQL, Caddy Server com HTTPS automático, Node.js LTS, PM2 e assistente de configuração interativo.",
+  "updatedAt":  "2026-10-24T21:38:46.637097217Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

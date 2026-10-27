@@ -1,0 +1,6 @@
+{
+  "name": "Gestão de Assistência Técnica (SAT)",
+  "description": "Sistema de gestão de assistência técnica e reparação de equipamentos informáticos e eletrónicos, com emissão de folhas de serviço A5, orçamentos e intervenções.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

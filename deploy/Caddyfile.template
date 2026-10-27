@@ -1,0 +1,62 @@
+# =====================================================================
+# Caddyfile — FSYS360 Service (FozSistemas)
+# Servidor Web & Reverse Proxy com HTTPS Automático
+# =====================================================================
+
+{
+    # Email do administrador para notificações do Let's Encrypt / ZeroSSL
+    email __ADMIN_EMAIL__
+    
+    # Otimização de segurança global
+    servers {
+        trusted_proxies static private_ranges
+    }
+}
+
+# Definição do Domínio ou IP do Servidor
+__DOMAIN__ {
+    # Emissão automática de certificado HTTPS:
+    # - Se for um domínio público (ex: sat.empresa.pt): Let's Encrypt automático.
+    # - Se for IP ou localhost: utiliza CA interna do Caddy (tls internal).
+    __TLS_CONFIG__
+
+    # Compressão de conteúdos estáticos para rapidez máxima
+    encode zstd gzip
+
+    # Cabeçalhos de Segurança HTTP (Hardening)
+    header {
+        # Previne ataques de clickjacking
+        X-Frame-Options "SAMEORIGIN"
+        # Proteção MIME Sniffing
+        X-Content-Type-Options "nosniff"
+        # Habilita filtro XSS dos navegadores
+        X-XSS-Protection "1; mode=block"
+        # Política de Referência
+        Referrer-Policy "strict-origin-when-cross-origin"
+        # Ocultar assinatura do servidor
+        -Server
+    }
+
+    # Proxy reverso para a aplicação Node.js (PM2)
+    reverse_proxy 127.0.0.1:__APP_PORT__ {
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+
+        # Health checks automáticos
+        health_uri /api/health
+        health_interval 30s
+        health_timeout 5s
+    }
+
+    # Logs de acesso estruturados em formato JSON
+    log {
+        output file /var/log/caddy/fsys360_access.log {
+            roll_size 20mb
+            roll_keep 10
+            roll_keep_for 30d
+        }
+        format json
+    }
+}
